@@ -5,7 +5,7 @@ import numpy.linalg as npla
 import matplotlib.pyplot as plt
 from tqdm import *
 
-class ode_obliterator_v2(dict):
+class ode_obliterator_v2_obsequious_oyster(dict):
     def __init__(self, RHS, init_val, init_time=0, h=1e-1, q=2,n=2):
         self.yp = RHS
         self.iv = np.array(init_val)
