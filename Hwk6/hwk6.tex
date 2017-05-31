@@ -1,0 +1,50 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+ 
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+%If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or lemma or whatever
+
+\begin{document}
+\author{Peter Shaffery}
+\title{Numerical Analysis II: Homework 6}
+\maketitle
+\section{Problems}
+\begin{problem}{1}
+The linear system $y' = A y$, $y(0) = y_0$ is solved by Euler's method.  Let $e_n = y_n - y(nh)$ and show that:
+\[
+\Vert e_n \Vert \leq \Vert y_0 \Vert \max_{\lambda \in \sigma(A)} | (1 + h \lambda)^n  - e^{nh\lambda}|
+\]
+Where the norm above is the 2-norm and $\sigma(A)$ denotes the set of eigenvalues of matrix $A$.
+\end{problem}
+\begin{proof}
+Some useful results:
+\begin{enumerate}
+\item Since $A$ is symmetric it is also diagonalizable and hence we can show that $y(t) = \sum\limits_{i=1}^n c_i e^{\lambda_i t} u_i$ where $\lambda_i$ are the eigenvalues of $A$ (with repetition), $u_i$ are the eigenvectors, and $c_i = \langle c_i,y_0 \rangle$.  More usefully, $\vec{c} = [c_1,...,c_n]^T = P^T y_0$ where $P$ is the matrix whose columns are the eigenvectors of $A$.
+\item Note that $y_n = (1 + hA) y_{n-1}$ hence by induction $y_n = (1+hA)^n y_0$.
+\end{enumerate}
+Let $\Lambda = diag(\lambda_1,...,\lambda_n)$, so then $y(t) = P e^{\Lambda t} P^T y_0$.  From this we have that $e_n = y(nh) - y_n = P e^{\Lambda t}  P^T y_0 - (1+hA)^n y_0 = (P e^{\Lambda t} P^T - (1+hA)^n) y_0$. Since norms are sub-multiplicative we then have that $\Vert e_n \Vert \leq \Vert P e^{\Lambda t} P^T - (1+hA)^n \Vert \Vert y_0 \Vert$ where the matrix norm in the left factor on the right of the inequality is just the induced 2-norm for operators.
+
+Now we note that $P e^{\Lambda t} P^T - (1+hA)^n$ is still a symmetric matrix, hence (assuming that it's real) its 2-norm is just its spectral radius.  Use the fact that $\sigma(P e^{\Lambda t} P^T) = e^{\sigma(A)*t}$, and furtheremore that the eigenvalue $e^{\lambda_it }$ of $P e^{\Lambda t} P^T$ has eigenvector $u_i$ (this can be seen from the series definition of matrix exponentials and the fact that the matrix is similar to $e^{\Lambda t}$).  We can similarly show that $\sigma((1+hA)^n) = (1 + h \sigma(A))^n$ and again, the eigenvalue $(1+h \lambda_i)^n$ has eigenvector $u_i$.  
+
+Therefore $(P e^{\Lambda t} P^T - (1+hA)^n) u_i = (e^{\lambda_i t} - (1+h \lambda_i)^n) u_i$, so the spectrum $\sigma(P e^{\Lambda t} P^T - (1+hA)^n) = e^{\sigma(A) t} - (1+h \sigma(A))^n$.  From this we have that $\Vert P e^{\Lambda t} P^T - (1+hA)^n \Vert = \rho(P e^{\Lambda t} P^T - (1+hA)^n) = \max_{\lambda \in \sigma(A)} |e^{\lambda t} - (1+h \lambda)^n|$, and then replace the $t$ by $nh$ because I just now realized that I forgot to do that earlier.  This completes the proof.
+\end{proof}
+
+\begin{problem}{2}
+The IVP $y' = \sqrt{y}$, $y(0) =0$ clearly has a non-trivial solution $y(t) = \frac{t^2}{4}$, but Euler's method just returns the trivial solution $y(t) = 0$.  Explain this paradox. 
+\end{problem}
+Euler's method basically uses iterated, first order Taylor approximations to estimate the function $y(t)$, but since $y(t)$ is a quadratic polynomial it's Taylor coefficients for the non-quadratic terms are all $0$.  Therefore the first order Taylor approximation to $y(t)$ at any point is a constant, and since $y(0) = 0$ Euler just returns a constant $y(t) = 0$.
+
+More directly, each step of Euler pushes the approximation forward by $h f(y_{n-1})$, but since $f(y_0) = 0$ then $y_1 = 0$ as well.  If $f(y_{n-1}) = 0$  and $y_{n-1} = 0$ then it can be quickly verified that $y_n =0$ for all steps $n$.
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

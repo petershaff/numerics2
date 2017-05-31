@@ -1,0 +1,45 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+ 
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+%If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or lemma or whatever
+
+\begin{document}
+\author{Peter Shaffery}
+\title{Numerical Analysis II: Homework 3}
+\maketitle
+\section{Problems}
+\begin{problem}{1}
+  Let $A$ be a symmetric positive definite matrix and set $A_0 = A$.  Take the Cholesky decomp $A_k = G_k G_k^T$ and then set $A_{k+1} = G_k^T G_k$.  Prove that any $A_k$ found this way is also PD and symmetric.  Show that, if $A$ is a symmetric, $2 \times 2$ matrix with two distinct eigenvalues $\lambda_1 > \lambda_2 \geq 0$ and an ordered diagonal that $A_k$ converges to $\text{diag}(\lambda_1, \lambda_2)$. 
+\end{problem}
+\begin{proof}[Proof that Sequence is Well-Defined]
+  First note that $G_k G_k^T = A_k$ implies $G_k^T = G_k^{-1} A_k$, hence $A_{k+1} = G_k^T G_k = G_k^{-1} A_k G_k$.  Since $A_{k+1}$ and $A_k$ are similar then they have the same eigenvalues, so if $A_k$ is PD then so is $A_{k+1}$.
+\end{proof}
+\begin{proof}[Proof of Convergence to Diagonal Matrix]
+  Now consider $A_k = \left[ \begin{array}{cc} a_k & b_k \\ b_k & c_k\\ \end{array} \right] = \left[ \begin{array}{cc} l_1 & 0 \\ l_2 & l_3\\ \end{array} \right] \left[ \begin{array}{cc} l_1 & l_2 \\ 0 & l_3\\ \end{array} \right]$.  Note that $a_k = l_1^2$, $c_k = l_2^2 + l_3^2$, and $b_k = l_1 l_2 $.  Since $a_k \geq c_k$ then $l_1^2 \geq l_2^2 + l_3^2$.  Now consider $A_{k+1} = \left[ \begin{array}{cc} l_1 & l_2 \\ 0 & l_3\\ \end{array} \right] \left[ \begin{array}{cc} l_1 & 0 \\ l_2 & l_3\\ \end{array} \right]$.  We still have that $a_{k+1} \geq c_{k+1}$, and he off-diagonal elements of $A_{k+1}$ are $b_{k+1} = l_2 l_3$. Assuming $l_2 \neq 0$ (in which case the matrix $A_k$ would already be diagonal), then from $l_1^2 > l_3^2$  we have that $|l_1| > |l_3|$, so $|b_k| > |b_{k+1}|$.  Therefore the absolute values of the off-diagonals of the $A_k$ form a strictly decreasing sequence and therefore the $b_k \rightarrow 0$.\
+
+  Since the off-diagonals of $A_k$ approach 0, then for $k$ sufficiently large the eigenvalues of $A_k$ are $\epsilon-\text{close}$ to the diagonal elements of $A_k$ (this is a direct consequence of the Gershgorin Circle Theorem).  Since all $A_k$ have the same, fixed eigenvalues (see previous proof), then this is equivalent to the diagonal elements of the $A_k$ becoming $\epsilon-\text{close}$ to $\lambda_1$ and $\lambda_2$.  Therefore the diagonal elements of $A_k$ go to $\lambda_1$ and $\lambda_2$ and the off-diagonals go to $0$, hence the $A_k$ converge in the Frobenius norm, completing the proof.
+\end{proof}
+
+
+\begin{problem}{2}
+Show that the Jacobi eigenvalue algorithm converges quadratically.
+\end{problem}
+
+\begin{proof}
+After one rotation with angle parameter $\theta$ we have from class that:
+\begin{equation}
+  \frac{a_{pq}}{a_{pp}-a_{qq}} = \frac{\text{cos}(\theta) \text{sin}(\theta)}{\text{cos}^2(\theta) - \text{sin}^2(\theta)} = \frac{1}{2} \text{tan}(\theta)
+\end{equation}
+Since all $a_{pq} \propto \mathcal{O}(\epsilon)$ then $\theta \propto \text{arctan}(\mathcal{O}(\epsilon))$.  From the Taylor expansion of $\text{arctan}(\mathcal{O}(\epsilon))$ we see that $\theta \propto \mathcal{O}(\epsilon)$.  We can then show, again from their Taylor expansions, that $\text{cos}(\theta) \propto 1- \mathcal{O}(\epsilon^2)$ and $\text{sin}(\theta) \propto \mathcal{O}(\epsilon)$.  Therefore every rotation matrix in the sweeps is of the form outlined in the problem statment (I really don't want to have to typeset that array).
+
+Since (again from class), $\text{off}^2(B) = \text{off}^2(A) - 2 a_{pq}^2$ then $|\text{off}^2(B) - \text{off}^2(A)| \propto |a_{pq}|^2 \propto \mathcal{O}(\epsilon^2)$.  Therefore the sum of squared, off-diagonal elements of this sequence decreases quadratically in terms of the individual rotations.
+\end{proof}
+
+\end{document}

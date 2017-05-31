@@ -1,0 +1,84 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+ 
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+%If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or lemma or whatever
+
+\begin{document}
+\author{Peter Shaffery}
+\title{Numerical Analysis II: Homework 3}
+\maketitle
+\section{Problems}
+\begin{problem}{1a}
+Prove that, if all the singular values of $A \in \mathbb{C}^{n \times n}$ are equal then $A = \gamma U$, where $\gamma$ is a constant and $U$ is unitary.
+\end{problem}
+\begin{proof}
+This follows almost immediately from the SVD of $A$.  Since $A = V \Sigma W^*$, where $V$ and $W$ are unitary and $\Sigma$ is a diagonal matrix of the singular values of $A$, then if all singular values are equal then $\Sigma = \gamma I$, where $I$ is the identity matrix.  Hence $A = \gamma V W^*$, and since $V$ and $W$ are unitary clearly $U = V W^*$ is unitary as well.
+\end{proof}
+
+
+\begin{problem}{1b}
+Prove that, if $A$ is nonsingular and $\lambda$ is an eigenvalue of $A$, then $\Vert A^{-1} \Vert_2^{-1} \leq \vert \lambda \vert \leq \Vert A \Vert_2$.  
+\end{problem}
+\begin{proof}
+  By the definition of $\Vert A \Vert_2 := \sup\limits_x \frac{\Vert Ax \Vert}{\Vert x \Vert}$ we have that $\vert \lambda \vert \leq \Vert A \Vert_2$.  This can be seen by letting $v$ be the eigenvector of $\lambda$ then $\Vert A v \Vert = |\lambda| \Vert v \Vert$.  Now note that $\frac{1}{\lambda}$ is an eigenvalue of $A^{-1}$, so we have that $\frac{1}{|\lambda|} \leq \Vert A^{-1} \Vert$, therefore $|\lambda| \geq \Vert A^{-1} \Vert^{-1}$, and the result is proven.
+\end{proof}
+
+\begin{problem}{1c}
+Prove that $A$ may be represented in the form $A = S U$, where $S$ is positive semidefinite and $U$ is unitary.  Furthermore prove that if $A$ is invertible then this representation is unique.
+\end{problem}
+\begin{proof}
+Couldn't make headway with this one
+\end{proof}
+
+\begin{problem}{2}
+Here we want to prove some eigenvector perturbation results.  Consider the following perturbed eigenproblem:
+\[
+(A + \epsilon B) u_k(\epsilon) = \lambda_k(\epsilon) u_k(\epsilon)
+\]
+We would like to show that:
+\[
+u_k(\epsilon) = u_k + \epsilon(a_k u_k + \sum\limits_{j \neq k} \frac{v_j^* B u_k}{(\lambda_k - \lambda_j) s_j}u_j) + \mathcal{O}(\epsilon^2)
+\]
+Where $A^* v_k = \bar{\lambda_k} v_k$ and $s_k = v_k^* u_k$.
+\end{problem}
+\begin{proof}
+To start let's assume that $\lambda_k(\epsilon)$ and $u_k(\epsilon)$ are continuous functions in $\epsilon$, so we can write:
+\[
+u_k(\epsilon) = u_k(0) + \epsilon u_k'(0) + \mathcal{O}(\epsilon^2)
+\]
+
+Take the derivative of both sides of the perturbed eigenproblem and set $\epsilon=0$ to get $B u_k + A u_k'(0) = \lambda_k'(0) u_k + \lambda_k u_k'(0)$, so:
+\begin{equation}
+(A- \lambda_k) u_k'(0) = (B - \lambda_k'(0)) u_k
+\end{equation}
+
+Note that we can expaned $u_k'(0)$ can be expanded in terms of the basis $(u_1,...,u_n)$, ie. $u'_k(0) = \sum\limits_{i=1}^n a_i u_i$ which can be inserted into (1) to get:
+\begin{equation}
+(B - \lambda_k'(0)) u_k = (A - \lambda_k) \sum\limits_{i=1}^n a_i u_i = \sum\limits_{i \neq k} a_i (\lambda_i - \lambda_k) u_i
+\end{equation}
+
+From the hint we have that $\lambda_k'(0) = \frac{v_k^* B u_k}{s_k}$, so this means that:
+\begin{equation}
+(B -  \frac{v_k^* B u_k}{s_k}) u_k = \sum\limits_{i \neq k} a_i (\lambda_i - \lambda_k) u_i
+\end{equation}
+
+Now we can pick out an individual term from the sum of the RHS of (3) by multiplying on both sides by $v_i^*$ (since $v_i^* u_j = \delta_{ij} s_i$, where $\delta_{ij}$ is the Kronecker delta), which gives:
+\[
+v_i^*Bu_k - \frac{v_k^* B u_k}{s_k} v_i^*u_k = a_i (\lambda_i - \lambda_k) s_i
+\]
+
+And since $i \neq k$ (the $k$ term dropped out of the sum a few steps back), then the second term in the LHS is always 0 and we can solve for $a_i$ to obtain:
+\begin{equation}
+a_i = \frac{v_i^* B u_k}{(\lambda_i - \lambda_k) s_i}
+\end{equation}
+
+Plugging (4) back into our expansion of $u_k'(0)$ and plugging \textit{that} into the expansion of $u_k(\epsilon)$ gives the desired result.
+\end{proof}
+\end{document}
